@@ -1,0 +1,137 @@
+# UART do LD2450
+uart:
+  id: uart_ld2450
+  tx_pin: GPIO16   # TX pin on the board
+  rx_pin: GPIO17   # RX pin on the board
+  baud_rate: 256000
+  parity: NONE
+  stop_bits: 1
+
+# Radar
+ld2450:
+  id: ld2450_radar
+  uart_id: uart_ld2450
+
+# ----------------------------
+# 1) Raw data from sensors
+# ----------------------------
+sensor:
+  - platform: ld2450
+    ld2450_id: ld2450_radar
+    
+
+    target_1:
+      x:
+        name: "T1 X (mm)"
+        id: t1_x
+      y:
+        name: "T1 Y (mm)"
+        id: t1_y
+      speed:
+        name: "T1 Speed (mm/s)"
+      angle:
+        name: "T1 Angle (deg)"
+      distance:
+        name: "T1 Distance (mm)"
+
+    target_2:
+      x:
+        name: "T2 X (mm)"
+        id: t2_x
+      y:
+        name: "T2 Y (mm)"
+        id: t2_y
+      speed:
+        name: "T2 Speed (mm/s)"
+      angle:
+        name: "T2 Angle (deg)"
+      distance:
+        name: "T2 Distance (mm)"
+
+    target_3:
+      x:
+        name: "T3 X (mm)"
+        id: t3_x
+      y:
+        name: "T3 Y (mm)"
+        id: t3_y
+      speed:
+        name: "T3 Speed (mm/s)"
+      angle:
+        name: "T3 Angle (deg)"
+      distance:
+        name: "T3 Distance (mm)"
+
+    target_count:
+      name: "LD2450 Target Count"
+    still_target_count:
+      name: "LD2450 Still Count"
+    moving_target_count:
+      name: "LD2450 Moving Count"
+
+# ----------------------------
+# 2) CANONICAL ENTITIES FOR PLOTLY
+#    (entity_id names exactly matching those used in the dashboard)
+# ----------------------------
+  - platform: template
+    name: "ld2450_radar_target1_x"
+    unit_of_measurement: "mm"
+    lambda: return id(t1_x).state;
+  - platform: template
+    name: "ld2450_radar_target1_y"
+    unit_of_measurement: "mm"
+    lambda: return id(t1_y).state;
+
+  - platform: template
+    name: "ld2450_radar_target2_x"
+    unit_of_measurement: "mm"
+    lambda: return id(t2_x).state;
+  - platform: template
+    name: "ld2450_radar_target2_y"
+    unit_of_measurement: "mm"
+    lambda: return id(t2_y).state;
+
+  - platform: template
+    name: "ld2450_radar_target3_x"
+    unit_of_measurement: "mm"
+    lambda: return id(t3_x).state;
+  - platform: template
+    name: "ld2450_radar_target3_y"
+    unit_of_measurement: "mm"
+    lambda: return id(t3_y).state;
+
+# Presents
+binary_sensor:
+  - platform: ld2450
+    ld2450_id: ld2450_radar
+    has_target:
+      name: "LD2450 Presence"
+    has_moving_target:
+      name: "LD2450 Moving Target"
+    has_still_target:
+      name: "LD2450 Still Target"
+
+text_sensor:
+  - platform: ld2450
+    ld2450_id: ld2450_radar
+    version:
+      name: "LD2450 Firmware"
+    mac_address:
+      name: "LD2450 BT MAC"
+
+switch:
+  - platform: ld2450
+    ld2450_id: ld2450_radar
+    bluetooth:
+      name: "LD2450 Bluetooth"
+    multi_target:
+      name: "LD2450 Multi Target"
+
+button:
+  - platform: ld2450
+    ld2450_id: ld2450_radar
+    restart:
+      name: "LD2450 Restart"
+    factory_reset:
+      name: "LD2450 Factory Reset"
+
